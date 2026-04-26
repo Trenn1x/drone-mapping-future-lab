@@ -1,19 +1,43 @@
 # Drone Mapping Future Lab
 
-Interactive web app concept for next-generation drone mapping missions.
+Interactive web app concept for future drone mapping missions.
 
-It simulates how an autonomous swarm could adapt flight planning based on:
-- Terrain roughness and canopy occlusion
+Live app: https://trenn1x.github.io/drone-mapping-future-lab/
+
+## What's New
+
+The app now includes:
+- Tailwind-based UI refresh with mobile-friendly layout
+- Scenario presets for forestry, construction, disaster response, and utility corridors
+- Battery logistics modeling (endurance, swaps, recharge windows)
+- Cost forecasting (flight + crew + AI processing)
+- Risk alert system with severity levels
+- Mission timeline breakdown by phase
+- Export tools for JSON and CSV
+- Copyable mission brief for ops handoff
+- Shareable URL links with full mission state in query params
+
+## Inputs
+
+- Survey area
+- Terrain roughness
+- Canopy/occlusion
 - Wind volatility
-- Resolution targets
-- No-fly corridor constraints
-- Mapping objective (orthomosaic, change detection, thermal, volumetric)
+- Resolution target
+- No-fly constraints
+- Swarm size
+- Risk tolerance
+- Objective, battery profile, comms mode
+- Cost per drone-hour
 
-The app outputs:
-- Recommended altitude and overlap strategy
-- Mission duration estimate
-- Confidence estimate and revisit ratio
-- Adaptive heatmap showing where additional passes are likely required
+## Outputs
+
+- Altitude and overlap strategy
+- Mission duration
+- Confidence and revisit demand
+- Coverage heatmap with no-fly zones
+- Battery swap and crew recommendations
+- Total and per-km² cost estimates
 
 ## Local Run
 
@@ -28,7 +52,6 @@ python3 -m http.server 8080
 
 Then visit `http://localhost:8080`.
 
-## Deploy
+## Deployment
 
-Deployment is automated via GitHub Actions in `.github/workflows/deploy-pages.yml`.
-On every push to `main`, the site deploys to GitHub Pages.
+The repository is configured for GitHub Pages from the `main` branch root (`/`).

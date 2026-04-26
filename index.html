@@ -6,7 +6,7 @@
     <title>Drone Mapping Future Lab</title>
     <meta
       name="description"
-      content="Interactive mission planning concept for next-generation drone mapping programs."
+      content="Interactive planning workspace for future drone mapping operations with logistics and risk modeling."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,95 +14,326 @@
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body>
-    <div class="ambient ambient-a"></div>
-    <div class="ambient ambient-b"></div>
+    <script>
+      window.tailwind = {
+        config: {
+          theme: {
+            extend: {
+              colors: {
+                slate900: "#070d15",
+                ink: "#dbeafe",
+                cyanAccent: "#3cead6",
+                amberAccent: "#f7bc64",
+                roseAlert: "#ff7d7d"
+              },
+              fontFamily: {
+                sans: ["Space Grotesk", "ui-sans-serif", "system-ui"],
+                mono: ["IBM Plex Mono", "ui-monospace", "SFMono-Regular"]
+              },
+              boxShadow: {
+                glass: "0 14px 45px rgba(2, 8, 20, 0.45)"
+              }
+            }
+          }
+        }
+      };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .radial-noise {
+        background-image: radial-gradient(circle at 15% 14%, rgba(37, 99, 235, 0.3), transparent 42%),
+          radial-gradient(circle at 84% 8%, rgba(217, 70, 239, 0.18), transparent 37%),
+          radial-gradient(circle at 10% 88%, rgba(249, 115, 22, 0.22), transparent 32%),
+          linear-gradient(135deg, #04070f 0%, #0b1627 54%, #172137 100%);
+      }
 
-    <main class="app">
-      <header class="hero">
-        <p class="eyebrow">Concept Web App</p>
-        <h1>Drone Mapping Future Lab</h1>
-        <p class="subhead">
-          Prototype an adaptive mission that dynamically allocates swarm flights by terrain complexity,
-          weather volatility, and survey objective.
+      .panel-glass {
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        background: linear-gradient(165deg, rgba(8, 18, 32, 0.92), rgba(11, 27, 43, 0.8));
+        backdrop-filter: blur(7px);
+      }
+
+      .control-range {
+        width: 100%;
+        accent-color: #3cead6;
+      }
+
+      #coverage-canvas {
+        width: 100%;
+        height: auto;
+      }
+
+      .soft-grid {
+        background-size: 30px 30px;
+        background-image: linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+      }
+    </style>
+  </head>
+  <body class="radial-noise min-h-screen text-ink antialiased">
+    <div class="pointer-events-none fixed inset-0 opacity-50">
+      <div class="absolute -right-28 -top-20 h-72 w-72 rounded-full bg-cyanAccent blur-3xl"></div>
+      <div class="absolute -left-20 bottom-10 h-64 w-64 rounded-full bg-amberAccent blur-3xl"></div>
+    </div>
+
+    <main class="relative z-10 mx-auto w-[min(1320px,95vw)] py-6 md:py-10">
+      <header class="mb-5 rounded-2xl border border-slate-700/50 bg-slate-900/70 px-5 py-5 shadow-glass md:px-7">
+        <p class="font-mono text-xs uppercase tracking-[0.2em] text-cyanAccent">Future Mapping Ops Console</p>
+        <h1 class="mt-1 text-2xl font-bold leading-tight text-slate-100 md:text-4xl">Drone Mapping Future Lab</h1>
+        <p class="mt-3 max-w-4xl text-sm text-slate-300 md:text-base">
+          Build autonomous mission plans with risk-aware swarm coverage, battery logistics, operating cost forecasts,
+          and shareable mission briefs for field teams.
         </p>
       </header>
 
-      <section class="grid-layout">
-        <aside class="panel controls-panel">
-          <h2>Mission Inputs</h2>
-          <form id="planner-form">
-            <label>
-              Survey Area (km²)
-              <input type="range" id="area" min="0.4" max="24" step="0.1" value="8.4" />
-              <output for="area" id="area-output">8.4</output>
-            </label>
-
-            <label>
-              Terrain Roughness (1-10)
-              <input type="range" id="terrain" min="1" max="10" step="1" value="6" />
-              <output for="terrain" id="terrain-output">6</output>
-            </label>
-
-            <label>
-              Canopy / Occlusion (%)
-              <input type="range" id="canopy" min="0" max="80" step="1" value="32" />
-              <output for="canopy" id="canopy-output">32%</output>
-            </label>
-
-            <label>
-              Wind Volatility (1-10)
-              <input type="range" id="wind" min="1" max="10" step="1" value="5" />
-              <output for="wind" id="wind-output">5</output>
-            </label>
-
-            <label>
-              Target Resolution (cm/px)
-              <input type="range" id="resolution" min="1.2" max="8" step="0.1" value="2.7" />
-              <output for="resolution" id="resolution-output">2.7</output>
-            </label>
-
-            <label>
-              No-Fly Constraint (%)
-              <input type="range" id="nofly" min="0" max="45" step="1" value="9" />
-              <output for="nofly" id="nofly-output">9%</output>
-            </label>
-
-            <label>
-              Swarm Size
-              <input type="range" id="drones" min="1" max="14" step="1" value="6" />
-              <output for="drones" id="drones-output">6 drones</output>
-            </label>
-
-            <label>
-              Survey Objective
-              <select id="objective">
-                <option value="orthomosaic">High-Integrity Orthomosaic</option>
-                <option value="change">Change Detection at Scale</option>
-                <option value="thermal">Thermal Risk Mapping</option>
-                <option value="volume">Volumetric Progress Modeling</option>
-              </select>
-            </label>
-
-            <button type="submit" id="plan-btn">Generate Mission Plan</button>
-          </form>
-        </aside>
-
-        <section class="panel output-panel">
-          <h2>Recommended Autonomous Stack</h2>
-          <div class="metrics" id="metrics"></div>
-
-          <div class="canvas-wrap">
-            <h3>Adaptive Coverage Heatmap</h3>
-            <canvas id="coverage-canvas" width="900" height="430"></canvas>
+      <section class="grid grid-cols-1 gap-4 lg:grid-cols-[360px,1fr] xl:grid-cols-[390px,1fr]">
+        <aside class="panel-glass rounded-2xl p-4 shadow-glass md:p-5">
+          <div class="mb-4">
+            <h2 class="text-sm font-semibold uppercase tracking-[0.11em] text-slate-300">Scenario Presets</h2>
+            <div class="mt-2 grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                class="preset-btn rounded-xl border border-cyan-300/40 bg-cyan-300/10 px-2 py-2 text-xs text-cyan-100 transition hover:border-cyan-200/70 hover:bg-cyan-200/20"
+                data-preset="forestry"
+              >
+                Dense Forestry
+              </button>
+              <button
+                type="button"
+                class="preset-btn rounded-xl border border-cyan-300/40 bg-cyan-300/10 px-2 py-2 text-xs text-cyan-100 transition hover:border-cyan-200/70 hover:bg-cyan-200/20"
+                data-preset="construction"
+              >
+                Construction Twin
+              </button>
+              <button
+                type="button"
+                class="preset-btn rounded-xl border border-cyan-300/40 bg-cyan-300/10 px-2 py-2 text-xs text-cyan-100 transition hover:border-cyan-200/70 hover:bg-cyan-200/20"
+                data-preset="disaster"
+              >
+                Disaster Scan
+              </button>
+              <button
+                type="button"
+                class="preset-btn rounded-xl border border-cyan-300/40 bg-cyan-300/10 px-2 py-2 text-xs text-cyan-100 transition hover:border-cyan-200/70 hover:bg-cyan-200/20"
+                data-preset="utility"
+              >
+                Utility Corridor
+              </button>
+            </div>
           </div>
 
-          <div class="notes" id="notes"></div>
+          <form id="planner-form" class="space-y-3">
+            <div>
+              <label class="mb-1 flex items-center justify-between text-xs uppercase tracking-wide text-slate-300" for="area">
+                <span>Survey Area (km²)</span>
+                <output id="area-output" class="font-mono text-cyan-100">8.4</output>
+              </label>
+              <input class="control-range" type="range" id="area" min="0.4" max="40" step="0.1" value="8.4" />
+            </div>
+
+            <div>
+              <label
+                class="mb-1 flex items-center justify-between text-xs uppercase tracking-wide text-slate-300"
+                for="terrain"
+              >
+                <span>Terrain Roughness</span>
+                <output id="terrain-output" class="font-mono text-cyan-100">6</output>
+              </label>
+              <input class="control-range" type="range" id="terrain" min="1" max="10" step="1" value="6" />
+            </div>
+
+            <div>
+              <label class="mb-1 flex items-center justify-between text-xs uppercase tracking-wide text-slate-300" for="canopy">
+                <span>Canopy / Occlusion</span>
+                <output id="canopy-output" class="font-mono text-cyan-100">32%</output>
+              </label>
+              <input class="control-range" type="range" id="canopy" min="0" max="90" step="1" value="32" />
+            </div>
+
+            <div>
+              <label class="mb-1 flex items-center justify-between text-xs uppercase tracking-wide text-slate-300" for="wind">
+                <span>Wind Volatility</span>
+                <output id="wind-output" class="font-mono text-cyan-100">5</output>
+              </label>
+              <input class="control-range" type="range" id="wind" min="1" max="10" step="1" value="5" />
+            </div>
+
+            <div>
+              <label
+                class="mb-1 flex items-center justify-between text-xs uppercase tracking-wide text-slate-300"
+                for="resolution"
+              >
+                <span>Resolution (cm/px)</span>
+                <output id="resolution-output" class="font-mono text-cyan-100">2.7</output>
+              </label>
+              <input class="control-range" type="range" id="resolution" min="1.2" max="8" step="0.1" value="2.7" />
+            </div>
+
+            <div>
+              <label class="mb-1 flex items-center justify-between text-xs uppercase tracking-wide text-slate-300" for="nofly">
+                <span>No-Fly Constraints</span>
+                <output id="nofly-output" class="font-mono text-cyan-100">9%</output>
+              </label>
+              <input class="control-range" type="range" id="nofly" min="0" max="50" step="1" value="9" />
+            </div>
+
+            <div>
+              <label class="mb-1 flex items-center justify-between text-xs uppercase tracking-wide text-slate-300" for="drones">
+                <span>Swarm Size</span>
+                <output id="drones-output" class="font-mono text-cyan-100">6 drones</output>
+              </label>
+              <input class="control-range" type="range" id="drones" min="1" max="18" step="1" value="6" />
+            </div>
+
+            <div>
+              <label
+                class="mb-1 flex items-center justify-between text-xs uppercase tracking-wide text-slate-300"
+                for="riskTolerance"
+              >
+                <span>Risk Tolerance</span>
+                <output id="riskTolerance-output" class="font-mono text-cyan-100">5</output>
+              </label>
+              <input class="control-range" type="range" id="riskTolerance" min="1" max="10" step="1" value="5" />
+            </div>
+
+            <div class="grid grid-cols-1 gap-3 pt-1">
+              <label class="text-xs uppercase tracking-wide text-slate-300" for="objective">
+                Survey Objective
+                <select
+                  id="objective"
+                  class="mt-1 w-full rounded-xl border border-slate-500/40 bg-slate-900/90 px-3 py-2 text-sm text-slate-100 outline-none ring-cyan-300/40 transition focus:ring"
+                >
+                  <option value="orthomosaic">High-Integrity Orthomosaic</option>
+                  <option value="change">Change Detection at Scale</option>
+                  <option value="thermal">Thermal Risk Mapping</option>
+                  <option value="volume">Volumetric Progress Modeling</option>
+                </select>
+              </label>
+
+              <label class="text-xs uppercase tracking-wide text-slate-300" for="batteryProfile">
+                Battery Profile
+                <select
+                  id="batteryProfile"
+                  class="mt-1 w-full rounded-xl border border-slate-500/40 bg-slate-900/90 px-3 py-2 text-sm text-slate-100 outline-none ring-cyan-300/40 transition focus:ring"
+                >
+                  <option value="standard">Standard Pack (42 min nominal)</option>
+                  <option value="light">High-Efficiency Pack (48 min nominal)</option>
+                  <option value="heavy">Heavy Payload Pack (33 min nominal)</option>
+                </select>
+              </label>
+
+              <label class="text-xs uppercase tracking-wide text-slate-300" for="comms">
+                Comms Layer
+                <select
+                  id="comms"
+                  class="mt-1 w-full rounded-xl border border-slate-500/40 bg-slate-900/90 px-3 py-2 text-sm text-slate-100 outline-none ring-cyan-300/40 transition focus:ring"
+                >
+                  <option value="mesh">Mesh + RTK Relay</option>
+                  <option value="lte">LTE + Edge Sync</option>
+                  <option value="satcom">Satcom Fallback Mesh</option>
+                </select>
+              </label>
+
+              <label class="text-xs uppercase tracking-wide text-slate-300" for="hourlyCost">
+                Cost per Drone-Hour (USD)
+                <input
+                  id="hourlyCost"
+                  type="number"
+                  min="60"
+                  max="500"
+                  step="1"
+                  value="155"
+                  class="mt-1 w-full rounded-xl border border-slate-500/40 bg-slate-900/90 px-3 py-2 text-sm text-slate-100 outline-none ring-cyan-300/40 transition focus:ring"
+                />
+              </label>
+            </div>
+
+            <button
+              type="submit"
+              class="w-full rounded-xl border border-cyan-300/60 bg-gradient-to-r from-cyan-300 to-sky-300 px-3 py-2.5 text-sm font-semibold uppercase tracking-wide text-slate-900 transition hover:brightness-105"
+            >
+              Regenerate Mission Plan
+            </button>
+          </form>
+
+          <div class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+            <button
+              id="copy-link-btn"
+              type="button"
+              class="rounded-xl border border-slate-500/50 bg-slate-800/70 px-3 py-2 text-xs font-medium text-slate-100 transition hover:border-slate-300/60"
+            >
+              Copy Share Link
+            </button>
+            <button
+              id="download-json-btn"
+              type="button"
+              class="rounded-xl border border-slate-500/50 bg-slate-800/70 px-3 py-2 text-xs font-medium text-slate-100 transition hover:border-slate-300/60"
+            >
+              Download JSON
+            </button>
+            <button
+              id="download-csv-btn"
+              type="button"
+              class="rounded-xl border border-slate-500/50 bg-slate-800/70 px-3 py-2 text-xs font-medium text-slate-100 transition hover:border-slate-300/60"
+            >
+              Download CSV
+            </button>
+            <button
+              id="copy-brief-btn"
+              type="button"
+              class="rounded-xl border border-slate-500/50 bg-slate-800/70 px-3 py-2 text-xs font-medium text-slate-100 transition hover:border-slate-300/60"
+            >
+              Copy Mission Brief
+            </button>
+          </div>
+        </aside>
+
+        <section class="space-y-4">
+          <article class="panel-glass rounded-2xl p-4 shadow-glass md:p-5">
+            <h2 class="text-sm font-semibold uppercase tracking-[0.11em] text-slate-300">Mission Summary</h2>
+            <div id="summary" class="mt-2 text-sm text-slate-200"></div>
+          </article>
+
+          <article class="panel-glass rounded-2xl p-4 shadow-glass md:p-5">
+            <h2 class="text-sm font-semibold uppercase tracking-[0.11em] text-slate-300">Planning Metrics</h2>
+            <div id="metrics" class="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4"></div>
+          </article>
+
+          <article class="panel-glass rounded-2xl p-4 shadow-glass md:p-5">
+            <div class="mb-3 flex items-center justify-between">
+              <h2 class="text-sm font-semibold uppercase tracking-[0.11em] text-slate-300">Risk Alerts</h2>
+              <span id="last-updated" class="font-mono text-xs text-slate-400"></span>
+            </div>
+            <div id="alerts" class="space-y-2"></div>
+          </article>
+
+          <article class="panel-glass rounded-2xl p-4 shadow-glass md:p-5">
+            <h2 class="text-sm font-semibold uppercase tracking-[0.11em] text-slate-300">Mission Timeline</h2>
+            <div id="timeline" class="mt-3 space-y-2"></div>
+          </article>
+
+          <article class="panel-glass rounded-2xl p-4 shadow-glass md:p-5">
+            <h2 class="text-sm font-semibold uppercase tracking-[0.11em] text-slate-300">Adaptive Coverage Heatmap</h2>
+            <p class="mt-1 text-xs text-slate-400">
+              Gray cells indicate constrained no-fly corridors. Hot cells indicate revisit demand and weak confidence pockets.
+            </p>
+            <div class="soft-grid mt-3 rounded-xl border border-slate-600/40 p-2">
+              <canvas id="coverage-canvas" width="960" height="430"></canvas>
+            </div>
+          </article>
+
+          <article class="panel-glass rounded-2xl p-4 shadow-glass md:p-5">
+            <h2 class="text-sm font-semibold uppercase tracking-[0.11em] text-slate-300">Autonomy Tactics</h2>
+            <div id="notes" class="mt-2 space-y-2"></div>
+          </article>
         </section>
       </section>
     </main>
+
+    <div
+      id="toast"
+      class="pointer-events-none fixed bottom-5 right-5 translate-y-4 rounded-lg border border-cyan-200/40 bg-slate-900/90 px-3 py-2 text-xs text-slate-100 opacity-0 transition duration-200"
+    ></div>
 
     <script src="./script.js"></script>
   </body>
