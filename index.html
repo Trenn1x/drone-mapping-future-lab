@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drone Mapping Future Lab</title>
+    <meta
+      name="description"
+      content="Interactive mission planning concept for next-generation drone mapping programs."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="ambient ambient-a"></div>
+    <div class="ambient ambient-b"></div>
+
+    <main class="app">
+      <header class="hero">
+        <p class="eyebrow">Concept Web App</p>
+        <h1>Drone Mapping Future Lab</h1>
+        <p class="subhead">
+          Prototype an adaptive mission that dynamically allocates swarm flights by terrain complexity,
+          weather volatility, and survey objective.
+        </p>
+      </header>
+
+      <section class="grid-layout">
+        <aside class="panel controls-panel">
+          <h2>Mission Inputs</h2>
+          <form id="planner-form">
+            <label>
+              Survey Area (km²)
+              <input type="range" id="area" min="0.4" max="24" step="0.1" value="8.4" />
+              <output for="area" id="area-output">8.4</output>
+            </label>
+
+            <label>
+              Terrain Roughness (1-10)
+              <input type="range" id="terrain" min="1" max="10" step="1" value="6" />
+              <output for="terrain" id="terrain-output">6</output>
+            </label>
+
+            <label>
+              Canopy / Occlusion (%)
+              <input type="range" id="canopy" min="0" max="80" step="1" value="32" />
+              <output for="canopy" id="canopy-output">32%</output>
+            </label>
+
+            <label>
+              Wind Volatility (1-10)
+              <input type="range" id="wind" min="1" max="10" step="1" value="5" />
+              <output for="wind" id="wind-output">5</output>
+            </label>
+
+            <label>
+              Target Resolution (cm/px)
+              <input type="range" id="resolution" min="1.2" max="8" step="0.1" value="2.7" />
+              <output for="resolution" id="resolution-output">2.7</output>
+            </label>
+
+            <label>
+              No-Fly Constraint (%)
+              <input type="range" id="nofly" min="0" max="45" step="1" value="9" />
+              <output for="nofly" id="nofly-output">9%</output>
+            </label>
+
+            <label>
+              Swarm Size
+              <input type="range" id="drones" min="1" max="14" step="1" value="6" />
+              <output for="drones" id="drones-output">6 drones</output>
+            </label>
+
+            <label>
+              Survey Objective
+              <select id="objective">
+                <option value="orthomosaic">High-Integrity Orthomosaic</option>
+                <option value="change">Change Detection at Scale</option>
+                <option value="thermal">Thermal Risk Mapping</option>
+                <option value="volume">Volumetric Progress Modeling</option>
+              </select>
+            </label>
+
+            <button type="submit" id="plan-btn">Generate Mission Plan</button>
+          </form>
+        </aside>
+
+        <section class="panel output-panel">
+          <h2>Recommended Autonomous Stack</h2>
+          <div class="metrics" id="metrics"></div>
+
+          <div class="canvas-wrap">
+            <h3>Adaptive Coverage Heatmap</h3>
+            <canvas id="coverage-canvas" width="900" height="430"></canvas>
+          </div>
+
+          <div class="notes" id="notes"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
